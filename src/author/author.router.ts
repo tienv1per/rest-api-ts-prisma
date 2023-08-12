@@ -1,14 +1,14 @@
 import express from "express";
 import type { Request, Response } from "express";
 import {body, validationResult} from "express-validator";
-import { listAuthor, getAuthor, createAuthor } from "./author.service";
+import * as AuthService from "./author.service";
 
 const router = express.Router();
 
 // GET list of all authors
 router.get("/", async(req: Request, res: Response) => {
     try {
-        const authors = await listAuthor();
+        const authors = await AuthService.listAuthor();
         return res.status(200).json(authors);
     } catch (error: any) {
         return res.status(500).json(error.message);
@@ -17,9 +17,9 @@ router.get("/", async(req: Request, res: Response) => {
 
 // GET 1 unique author
 router.get("/:id", async(req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id);
+    const id: number = parseInt(req.params.id, 10);
     try {
-        const author = await getAuthor(id);
+        const author = await AuthService.getAuthor(id);
         if(author){
             return res.status(200).json(author);
         }
@@ -44,11 +44,44 @@ router.post("/",
         }
         try {
             const author = req.body;
-            const newAuthor = await createAuthor(author);
+            const newAuthor = await AuthService.createAuthor(author);
             return res.status(201).json(newAuthor);
         } catch (error: any) {
             return res.status(500).json(error.message);
         }
+});
+
+// UPDATE author
+router.put("/:id", 
+    body("firstName").isString(),
+    body("lastName").isString(),
+    async(req: Request, res: Response) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(404).json({
+                errors: errors.array(),
+            });
+        }
+        const id: number = parseInt(req.params.id, 10);
+        try {
+            const author = req.body;
+            const updatedAuthor = AuthService.updateAuthor(author, id);
+            return res.status(200).json(updatedAuthor);
+        } catch (error: any) {
+            return res.status(500).json(error.message);            
+        }        
+    }    
+);
+
+// DELETE author 
+router.delete("/:id", async(req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
+    try {
+        await AuthService.deleteAuthor(id);
+        return res.status(200).json("Deleted author successfully");
+    } catch (error: any) {
+        return res.status(500).json(error.message);
+    }
 });
 
 export default router;
