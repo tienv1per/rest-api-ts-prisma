@@ -1,5 +1,7 @@
 // load default data into DB
-import { db } from "./src/utils/db.server";
+// sử dụng Prisma để tạo dữ liệu mẫu cho cơ sở dữ liệu
+// tạo và điền dữ liệu vào các bảng author và book trong cơ sở dữ liệu, với một số dữ liệu mẫu đã được định nghĩa trước
+import { db } from "../src/utils/db.server";
 
 // 3 other columns are added by DB by default nen ko can define here
 type Author = {
@@ -54,8 +56,6 @@ const seed = async() => {
 
 };
 
-seed();
-
 const getAuthors = (): Array<Author> => {
     return [
         {
@@ -92,3 +92,5 @@ const getBooks = (): Array<Book> => {
         }
     ];
 }
+
+seed();
