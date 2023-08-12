@@ -1,10 +1,9 @@
 import { db } from "../utils/db.server";
 
-type Author = {
+export type Author = {
     id: number;
     firstName: string;
     lastName: string;
-    createdAt: Date;
 };
 
 export const listAuthor = async(): Promise<Author[]> => {
@@ -13,7 +12,6 @@ export const listAuthor = async(): Promise<Author[]> => {
             id: true,
             firstName: true,
             lastName: true,
-            createdAt: true,
         }
     });
     return authors;
@@ -28,7 +26,6 @@ export const getAuthor = async(id: number): Promise<Author|null> => {
             id: true,
             firstName: true,
             lastName: true,
-            createdAt: true,
         }
     });
     return author;
@@ -46,7 +43,6 @@ export const createAuthor = async(author: Omit<Author, "id">): Promise<Author> =
             id: true,
             firstName: true, 
             lastName: true,
-            createdAt: true
         }
     });
     return createdAuthor;
@@ -66,7 +62,6 @@ export const updateAuthor = async(author: Omit<Author, "id">, id: number): Promi
             id: true,
             firstName: true, 
             lastName: true,
-            createdAt: true
         }
     });
 };
