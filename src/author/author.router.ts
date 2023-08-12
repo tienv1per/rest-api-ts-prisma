@@ -18,6 +18,7 @@ router.get("/", async(req: Request, res: Response) => {
 // GET 1 unique author
 router.get("/:id", async(req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
+
     try {
         const author = await AuthService.getAuthor(id);
         if(author){
@@ -37,11 +38,13 @@ router.post("/",
     body("lastName").isString(),
     async(req: Request, res: Response) => {
         const errors = validationResult(req);
+
         if(!errors.isEmpty()){
             return res.status(404).json({
                 errors: errors.array(),
             });
         }
+
         try {
             const author = req.body;
             const newAuthor = await AuthService.createAuthor(author);
@@ -62,10 +65,12 @@ router.put("/:id",
                 errors: errors.array(),
             });
         }
+
         const id: number = parseInt(req.params.id, 10);
+
         try {
             const author = req.body;
-            const updatedAuthor = AuthService.updateAuthor(author, id);
+            const updatedAuthor = await AuthService.updateAuthor(author, id);
             return res.status(200).json(updatedAuthor);
         } catch (error: any) {
             return res.status(500).json(error.message);            
@@ -76,6 +81,7 @@ router.put("/:id",
 // DELETE author 
 router.delete("/:id", async(req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
+
     try {
         await AuthService.deleteAuthor(id);
         return res.status(200).json("Deleted author successfully");
